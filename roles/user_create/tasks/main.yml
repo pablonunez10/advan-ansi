@@ -1,0 +1,33 @@
+---
+# tasks file for user_create
+- name: asegurar que existe el grupo {{ ansible_local_user }}
+  group: 
+    name: "{{ ansible_local_user }}"
+    state: present 
+    system: yes
+
+- name: add {{ ansible_local_user }} sudoers file
+  copy: 
+    content: "%{{ ansible_local_user }} ALL=(ALL) NOPASSWD: ALL"
+    dest: /etc/sudoers.d/{{ ansible_local_user }} 
+    validate: '/usr/sbin/visudo -cf %s'
+    mode: '0440'
+
+- name: add user {{ ansible_local_user }}
+  user:
+    name: "{{ ansible_local_user }}"
+    group: "{{ ansible_local_user }}"
+    home: "/home/{{ ansible_local_user }}/"
+    shell: /bin/bash
+    state: present
+    system: yes
+    expires: -1
+    password: "$6$mysecretsalt$sy8VNBUaUYhiywtAbDMpgybizA3oXVQW2Bmn4WNnc91GyKjTUunUMUrkSJUFRHfhd4Gyr4D8uaMoNepS2vUbu."
+
+  notify: 
+    - does not expires
+
+- name: set ssh keybase login 
+  authorized_key:
+    user: "{{ ansible_local_user }}"
+    key: "{{ lookup('file', '/home/ansible/.ssh/id_rsa.pub') }}"
