@@ -1,5 +1,5 @@
 ---
 - hosts: servidor
-  become: true 
+  become: true
   roles:
    - role: user_create

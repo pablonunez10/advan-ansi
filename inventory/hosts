@@ -1,3 +1,2 @@
 [servidor]
-192.168.32.77 ansible_ssh_pass=info2022
-
+192.168.32.77 ansible_ssh_pass=info2022 
